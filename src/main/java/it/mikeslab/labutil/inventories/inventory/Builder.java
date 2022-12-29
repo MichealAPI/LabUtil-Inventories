@@ -5,6 +5,8 @@ import it.mikeslab.labutil.inventories.cache.InvData;
 import it.mikeslab.labutil.inventories.component.CustomItem;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.HashMap;
@@ -24,7 +26,7 @@ public class Builder {
 
     public CustomInventory build() {
         Map<Integer, CustomItem> items = getItems();
-        String title = config.getString("title");
+        String title = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(config.getString("title")));
         int size = config.getInt("size");
 
         this.inventory = new CustomInventory(items, name, title, size);
