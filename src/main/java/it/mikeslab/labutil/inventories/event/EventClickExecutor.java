@@ -23,7 +23,6 @@ public class EventClickExecutor {
 
     public Consumer<InventoryClickEvent> loadClickEvent() {
         return (e) -> {
-            e.setCancelled(true);
             if (methods.isEmpty()) return;
 
             for (Map.Entry<Object, Method> entry : methods.entrySet()) {
