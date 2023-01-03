@@ -110,13 +110,14 @@
             <artifactId>adventure-platform-bukkit</artifactId>
             <version>4.2.0</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
-            <version>1.5.25</version>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
+
+    <developers>
+        <developer>
+            <id>mike</id>
+            <name>Micheal</name>
+            <email>dev@mikeslab.it</email>
+        </developer>
+    </developers>
 </project>
+
