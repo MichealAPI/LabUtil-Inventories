@@ -1,7 +1,9 @@
 package it.mikeslab.labutil.inventories.inventory;
 
-import it.mikeslab.labutil.inventories.component.CustomInventory;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import it.mikeslab.labutil.inventories.cache.InvData;
+import it.mikeslab.labutil.inventories.component.CustomInventory;
 import it.mikeslab.labutil.inventories.component.CustomItem;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,9 +12,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.InventoryHolder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -30,7 +29,7 @@ public class Builder {
     }
 
     public CustomInventory build() {
-        Map<Integer, CustomItem> items = getItems();
+        HashBasedTable<String, CustomItem, Integer> items = getItems();
         String title = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(config.getString("title")));
         int size = config.getInt("size");
         this.fillerMaterial = Material.valueOf(config.getString("filler"));
@@ -40,23 +39,25 @@ public class Builder {
     }
 
 
-    private Map<Integer, CustomItem> getItems() {
-        Map<Integer, CustomItem> items = new HashMap<>();
+    private HashBasedTable<String, CustomItem, Integer> getItems() {
+        HashBasedTable<String, CustomItem, Integer> items = HashBasedTable.create();
         for(String key : config.getConfigurationSection("items").getKeys(false)) {
             int slot = Integer.parseInt(key); //Throws NumberFormatException if key is not a number
-            items.put(slot, CustomItem.fromConfig(config.getConfigurationSection("items." + slot)));
+            String action = config.getString("items." + key + ".action");
+            items.put(action, CustomItem.fromConfig(config.getConfigurationSection("items." + slot)), slot);
         }
         return items;
     }
 
-    public static String getActionFromSlot(int slot, CustomInventory inventory) {
-        for (int i = 0; i < inventory.getSize()-1; i++) {
-            CustomItem item = inventory.getItems().getOrDefault(i, null);
-            if (item != null && item.getSlot() == slot) {
-                return item.getAction();
+    public static String getAction(HashBasedTable<String, CustomItem, Integer> items, int slot) {
+        String action = null;
+        for (Table.Cell<String, CustomItem, Integer> cell : items.cellSet()) {
+            if (cell.getValue().equals(slot)) {
+                action = cell.getRowKey();
+                break;
             }
         }
-        return null;
+        return action;
     }
 
 

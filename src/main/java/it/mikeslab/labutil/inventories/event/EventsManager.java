@@ -10,7 +10,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class EventsManager implements Listener {
-    private JavaPlugin plugin;
     private EventCloseExecutor eventCloseExecutor;
     private EventOpenExecutor eventOpenExecutor;
     private EventClickExecutor eventClickExecutor;

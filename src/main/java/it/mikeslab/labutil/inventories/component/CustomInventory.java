@@ -1,5 +1,6 @@
 package it.mikeslab.labutil.inventories.component;
 
+import com.google.common.collect.HashBasedTable;
 import it.mikeslab.labutil.inventories.component.CustomItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,26 +19,29 @@ import java.util.Map;
 @Setter
 public class CustomInventory {
 
-    private Map<Integer, CustomItem> items;
+    private HashBasedTable<String, CustomItem, Integer> items;
     private Material fillerMaterial;
     private String name;
     private String title;
     private int size;
     private InventoryHolder holder;
 
-    public void addItem(int slot, CustomItem item) {
-        items.put(slot, item);
+    public void addItem(int slot, CustomItem item, String action) {
+        items.put(action, item, slot);
     }
 
-    public void removeItem(int slot) {
-        items.remove(slot);
+    public void removeItem(String action, CustomItem item) {
+        items.remove(action, item);
     }
 
     public Inventory getBukkitInventory() {
         Inventory inventory = Bukkit.createInventory(holder, size, title);
 
-        for(Map.Entry<Integer, CustomItem> entry : items.entrySet()) {
-            inventory.setItem(entry.getKey(), CustomItem.fromCustom(entry.getValue()));
+        for(Map.Entry<String, Map<CustomItem, Integer>> entry : items.rowMap().entrySet()) {
+            CustomItem item = entry.getValue().keySet().iterator().next();
+            int slot = entry.getValue().values().iterator().next();
+
+            inventory.setItem(slot, CustomItem.fromCustom(item));
         }
 
         return this.fill(inventory);

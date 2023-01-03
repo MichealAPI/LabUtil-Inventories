@@ -25,7 +25,8 @@ public class EventClickExecutor {
         return (e) -> {
             if (methods.isEmpty()) return;
 
-            String action = Builder.getActionFromSlot(e.getSlot(), this.inventory);
+            String action = Builder.getAction(this.inventory.getItems(), e.getSlot());
+
             if(action == null) return;
 
             for (Map.Entry<Object, Method> entry : methods.entrySet()) {
