@@ -1,6 +1,6 @@
 package it.mikeslab.labutil.inventories.event;
 
-import it.mikeslab.labutil.inventories.CustomInventory;
+import it.mikeslab.labutil.inventories.component.CustomInventory;
 import it.mikeslab.labutil.inventories.annotations.ClickEvent;
 import it.mikeslab.labutil.inventories.inventory.Builder;
 import org.bukkit.event.inventory.InventoryClickEvent;

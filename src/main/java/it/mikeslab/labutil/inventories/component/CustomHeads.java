@@ -1,4 +1,4 @@
-package it.mikeslab.labutil.inventories;
+package it.mikeslab.labutil.inventories.component;
 
 import it.mikeslab.labutil.inventories.legacy.Translator;
 import net.kyori.adventure.text.Component;

@@ -1,7 +1,6 @@
 package it.mikeslab.labutil.inventories.event;
 
-import it.mikeslab.labutil.inventories.CustomInventory;
-import lombok.RequiredArgsConstructor;
+import it.mikeslab.labutil.inventories.component.CustomInventory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;

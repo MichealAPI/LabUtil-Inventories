@@ -1,7 +1,6 @@
 package it.mikeslab.labutil.inventories.component;
 
 import com.cryptomorin.xseries.XMaterial;
-import it.mikeslab.labutil.inventories.CustomHeads;
 import it.mikeslab.labutil.inventories.legacy.Translator;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +33,7 @@ public class CustomItem {
                 .action(config.getString("action").toUpperCase())
                 .amount(config.getInt("amount") == 0 ? 1 : config.getInt("amount"))
                 .customModelData(config.getInt("customModelData") == 0 ? -1 : config.getInt("customModelData"))
-                .texture(config.getString("texture") == null ? "" : config.getString("texture"))
+                .texture(config.getString("texture") == null ? null : config.getString("texture"))
                 .build();
     }
 

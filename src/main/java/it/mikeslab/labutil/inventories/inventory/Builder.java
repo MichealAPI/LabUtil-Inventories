@@ -1,6 +1,6 @@
 package it.mikeslab.labutil.inventories.inventory;
 
-import it.mikeslab.labutil.inventories.CustomInventory;
+import it.mikeslab.labutil.inventories.component.CustomInventory;
 import it.mikeslab.labutil.inventories.cache.InvData;
 import it.mikeslab.labutil.inventories.component.CustomItem;
 import lombok.Getter;
@@ -10,7 +10,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;

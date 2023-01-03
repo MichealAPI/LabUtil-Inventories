@@ -1,4 +1,4 @@
-package it.mikeslab.labutil.inventories;
+package it.mikeslab.labutil.inventories.component;
 
 import it.mikeslab.labutil.inventories.component.CustomItem;
 import lombok.AllArgsConstructor;
