@@ -18,7 +18,7 @@ import java.util.UUID;
 public class CustomHeads {
 
 
-    public static ItemStack getCustomHead(final String val, final Component name, final List<Component> lore) {
+    public static ItemStack getCustomHead(final String val, final Component name, final List<Component> lore, int amount) {
 
         PlayerProfile playerProfile = Bukkit.createPlayerProfile(UUID.randomUUID());
         PlayerTextures textures = playerProfile.getTextures();
@@ -26,7 +26,7 @@ public class CustomHeads {
         playerProfile.setTextures(textures);
 
 
-        final ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD, amount);
         SkullMeta meta = (SkullMeta) head.getItemMeta();
         meta.setOwnerProfile(playerProfile);
         meta.setDisplayName(Translator.translate(name));
