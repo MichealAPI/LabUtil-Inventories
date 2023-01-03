@@ -49,7 +49,7 @@ public class CustomInventory {
                 inventory.setItem(i, filler);
             }
         }
-        
+
 
         return inventory;
     }
