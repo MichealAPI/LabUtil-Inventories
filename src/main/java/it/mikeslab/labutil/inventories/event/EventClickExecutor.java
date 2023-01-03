@@ -30,7 +30,7 @@ public class EventClickExecutor {
 
                 if (clickEvent == null) return;
 
-                if (!Objects.equals(clickEvent.action().toUpperCase(), Builder.getActionFromSlot(e.getSlot(), this.inventory))) return;
+                if (clickEvent.action().toUpperCase() != Builder.getActionFromSlot(e.getSlot(), this.inventory)) return;
 
 
                 try {

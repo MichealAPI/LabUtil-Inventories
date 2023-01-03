@@ -35,6 +35,7 @@ public class CustomInventory {
 
     public Inventory getBukkitInventory() {
         Inventory inventory = Bukkit.createInventory(holder, size, title);
+
         for(Map.Entry<Integer, CustomItem> entry : items.entrySet()) {
             inventory.setItem(entry.getKey(), CustomItem.fromCustom(entry.getValue()));
         }
