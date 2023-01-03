@@ -44,6 +44,8 @@ public class Builder {
         for(String key : config.getConfigurationSection("items").getKeys(false)) {
             int slot = Integer.parseInt(key); //Throws NumberFormatException if key is not a number
             String action = config.getString("items." + key + ".action");
+            action = action == null ? "null" : action;
+
             items.put(action, CustomItem.fromConfig(config.getConfigurationSection("items." + slot)), slot);
         }
         return items;
