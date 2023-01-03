@@ -26,7 +26,7 @@ public class CustomItem {
 
     public static CustomItem fromConfig(ConfigurationSection config) {
         return CustomItem.builder()
-                .displayName(Translator.translate(config.getString("displayName")))
+                .displayName(Translator.translate(config.getString("displayName") + ""))
                 .lore(Translator.translateList(config.getStringList("lore")))
                 .material(XMaterial.valueOf(config.getString("material")))
                 .slot(config.getInt("slot"))

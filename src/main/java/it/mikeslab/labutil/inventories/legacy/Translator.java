@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ public class Translator {
     }
 
     public static List<Component> translateList(List<String> input) {
+        if(input == null) return new ArrayList<>();
         return input.stream().map(MiniMessage.miniMessage()::deserialize).collect(Collectors.toList());
     }
 
