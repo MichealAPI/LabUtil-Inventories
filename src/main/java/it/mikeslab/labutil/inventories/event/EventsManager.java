@@ -10,16 +10,19 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
-@RequiredArgsConstructor
 public class EventsManager implements Listener {
-    private final JavaPlugin plugin;
+    private JavaPlugin plugin;
     private EventCloseExecutor eventCloseExecutor;
     private EventOpenExecutor eventOpenExecutor;
     private EventClickExecutor eventClickExecutor;
     private InventoryHolder holder;
 
-    public EventsManager registerEvents(String inventoryName, CustomInventory customInventory) {
+    public EventsManager init(JavaPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        return this;
+    }
+
+    public EventsManager registerEvents(String inventoryName, CustomInventory customInventory) {
 
         this.holder = customInventory.getHolder();
         this.eventCloseExecutor = new EventCloseExecutor(inventoryName);

@@ -44,15 +44,16 @@ public class CustomInventory {
 
     private Inventory fill(Inventory inventory) {
         ItemStack filler = formulateFiller();
-        while(isEmpty(inventory)) {
-            inventory.addItem(filler);
+        for(int i = 0; i < inventory.getSize(); i++) {
+            if(inventory.getItem(i) == null) {
+                inventory.setItem(i, filler);
+            }
         }
+        
+
         return inventory;
     }
 
-    private boolean isEmpty(Inventory inventory) {
-        return inventory.firstEmpty() != -1;
-    }
 
     private ItemStack formulateFiller() {
         ItemStack filler = new ItemStack(fillerMaterial);
