@@ -3,6 +3,7 @@ package it.mikeslab.labutil.inventories.legacy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class Translator {
     }
 
     public static List<String> translate(List<Component> input) {
+        if(input == null) return new ArrayList<>();
         return input.stream().map(LegacyComponentSerializer.legacySection()::serialize).collect(Collectors.toList());
     }
 
