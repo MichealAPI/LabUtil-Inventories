@@ -1,5 +1,6 @@
 package it.mikeslab.labutil.inventories.component;
 
+import com.cryptomorin.xseries.XMaterial;
 import it.mikeslab.labutil.inventories.legacy.Translator;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -28,7 +29,7 @@ public class CustomHeads {
         playerProfile.setTextures(textures);
 
 
-        final ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
         SkullMeta meta = (SkullMeta) head.getItemMeta();
         meta.setOwnerProfile(playerProfile);
         meta.setDisplayName(displayName);
