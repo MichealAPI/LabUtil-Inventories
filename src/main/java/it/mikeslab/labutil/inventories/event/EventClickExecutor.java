@@ -33,7 +33,7 @@ public class EventClickExecutor {
 
                 if (clickEvent == null) return;
 
-                if (clickEvent.action().toUpperCase() != action.toUpperCase()) return;
+                if (!clickEvent.action().equalsIgnoreCase(action)) return;
 
 
                 try {

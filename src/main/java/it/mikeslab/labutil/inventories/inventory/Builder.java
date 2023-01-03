@@ -50,7 +50,7 @@ public class Builder {
     }
 
     public static String getActionFromSlot(int slot, CustomInventory inventory) {
-        for (int i = 0; i < inventory.getSize(); i++) {
+        for (int i = 0; i < inventory.getSize()-1; i++) {
             CustomItem item = inventory.getItems().getOrDefault(i, null);
             if (item != null && item.getSlot() == slot) {
                 return item.getAction();
