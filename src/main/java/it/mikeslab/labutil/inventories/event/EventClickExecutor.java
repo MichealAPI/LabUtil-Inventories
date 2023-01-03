@@ -25,12 +25,15 @@ public class EventClickExecutor {
         return (e) -> {
             if (methods.isEmpty()) return;
 
+            String action = Builder.getActionFromSlot(e.getSlot(), this.inventory);
+            if(action == null) return;
+
             for (Map.Entry<Object, Method> entry : methods.entrySet()) {
                 ClickEvent clickEvent = entry.getValue().getAnnotation(ClickEvent.class);
 
                 if (clickEvent == null) return;
 
-                if (clickEvent.action().toUpperCase() != Builder.getActionFromSlot(e.getSlot(), this.inventory)) return;
+                if (clickEvent.action().toUpperCase() != action.toUpperCase()) return;
 
 
                 try {
