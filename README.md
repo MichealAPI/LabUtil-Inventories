@@ -1,6 +1,7 @@
 # LabUtil-Inventories
 
 Welcome to LabUtil-Inventories, a library for creating custom inventory interfaces with custom actions and events for each item, as well as translatable placeholders for display names and lores. LabUtil-Inventories also supports open and close events for the inventory as a whole.
+All thanks to a simple Config.YAML file!
 
 ## Getting Started
 
@@ -10,36 +11,21 @@ To get started with LabUtil-Inventories, you will need to select a config file t
 
 Here is an example of how to use LabUtil-Inventories in your project:
 
-```java 
-//Registering the inventory
-new InvData("inventories", new String[]{"testInventory"}, this).load();
-//Registering the EventClass
-this.eventsManager = ExecutorUtil.registerEvent(new EventClass(), "testInventory", this);
-
-//Opening the inventory
-Builder builder = new Builder("testInventory", new Holder());
-CustomInventory inventory = builder.build();
-player.openInventory(inventory.getBukkitInventory());
+```YAML
+title: <blue>Woahh!
+size: 27
+filler: BLACK_STAINED_GLASS_PANE
+items:
+  0:
+    material: PAPER
+    customModelData: 10000
+    displayName: "<blue>MikesLab Industries"
+    action: TEST_ACTION
+    lore:
+      - "<gray>Click to test the plugin!"
 ```
 
-Events usage example:
 
-```java 
-@CloseEvent
-public void onClose(InventoryCloseEvent event) {
-    //Do something
-}
-
-@OpenEvent
-public void onOpen(InventoryOpenEvent event) {
-    //Do something
-}
-
-@ClickEvent(action = "EXAMPLE_ACTION")
-public void onClick(InventoryClickEvent event) {
-    //Do something
-}
-```
 For more details, take a look at the [Wiki](https://github.com/MichealsLab/LabUtil-Inventories/wiki).
 
 ## Contributing
