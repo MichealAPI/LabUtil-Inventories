@@ -1,5 +1,6 @@
 package it.mikeslab.labutil.inventories.inventory;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.mikeslab.labutil.inventories.cache.InvData;
@@ -32,7 +33,7 @@ public class Builder {
         HashBasedTable<String, CustomItem, Integer> items = getItems();
         String title = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(config.getString("title")));
         int size = config.getInt("size");
-        this.fillerMaterial = Material.valueOf(config.getString("filler"));
+        this.fillerMaterial = XMaterial.matchXMaterial(config.getString("filler")).orElse(XMaterial.AIR).parseMaterial();
 
         this.inventory = new CustomInventory(items, fillerMaterial, name, title, size, holder);
         return inventory;
@@ -43,12 +44,19 @@ public class Builder {
         HashBasedTable<String, CustomItem, Integer> items = HashBasedTable.create();
         for(String key : config.getConfigurationSection("items").getKeys(false)) {
             int slot = Integer.parseInt(key); //Throws NumberFormatException if key is not a number
-            String action = config.getString("items." + key + ".action");
-            action = action == null ? "null" : action;
+            String action = getActionValue(key);
+            CustomItem item = CustomItem.fromConfig(config.getConfigurationSection("items." + key));
 
-            items.put(action, CustomItem.fromConfig(config.getConfigurationSection("items." + slot)), slot);
+            items.put(action, item, slot);
+            System.out.println("Added item " + item.getDisplayName() + " to slot " + slot + " with action " + action);
         }
         return items;
+    }
+
+
+    private String getActionValue(String key) {
+        String action = config.getString("items." + key + ".action");
+        return action == null ? "NONE" : action;
     }
 
     public static String getAction(HashBasedTable<String, CustomItem, Integer> items, int slot) {

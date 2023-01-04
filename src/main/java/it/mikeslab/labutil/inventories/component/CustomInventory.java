@@ -63,7 +63,11 @@ public class CustomInventory {
 
 
     private ItemStack formulateFiller() {
-        ItemStack filler = XMaterial.matchXMaterial(fillerMaterial).or(XMaterial.AIR).parseItem();
+
+        ItemStack filler = XMaterial.matchXMaterial(fillerMaterial).parseItem();
+        if(fillerMaterial.isAir()) return filler;
+
+
         ItemMeta meta = filler.getItemMeta();
         meta.setDisplayName(" ");
 
