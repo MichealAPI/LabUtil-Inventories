@@ -1,6 +1,8 @@
 package it.mikeslab.labutil.inventories.component;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import it.mikeslab.labutil.inventories.component.CustomItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,9 +39,9 @@ public class CustomInventory {
     public Inventory getBukkitInventory() {
         Inventory inventory = Bukkit.createInventory(holder, size, title);
 
-        for(Map.Entry<String, Map<CustomItem, Integer>> entry : items.rowMap().entrySet()) {
-            CustomItem item = entry.getValue().keySet().iterator().next();
-            int slot = entry.getValue().values().iterator().next();
+        for(Table.Cell<String, CustomItem, Integer> cell : items.cellSet()) {
+            CustomItem item = cell.getColumnKey();
+            int slot = cell.getValue();
 
             inventory.setItem(slot, CustomItem.fromCustom(item));
         }
@@ -61,7 +63,7 @@ public class CustomInventory {
 
 
     private ItemStack formulateFiller() {
-        ItemStack filler = new ItemStack(fillerMaterial);
+        ItemStack filler = XMaterial.matchXMaterial(fillerMaterial).or(XMaterial.AIR).parseItem();
         ItemMeta meta = filler.getItemMeta();
         meta.setDisplayName(" ");
 
