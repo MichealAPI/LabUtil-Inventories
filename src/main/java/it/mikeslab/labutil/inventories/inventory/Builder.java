@@ -30,7 +30,7 @@ public class Builder {
     }
 
     public CustomInventory build() {
-        HashBasedTable<String, CustomItem, Integer> items = getItems();
+        HashBasedTable<Integer, CustomItem, String> items = getItems();
         String title = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(config.getString("title")));
         int size = config.getInt("size");
         this.fillerMaterial = getFillerMaterial();
@@ -40,14 +40,14 @@ public class Builder {
     }
 
 
-    private HashBasedTable<String, CustomItem, Integer> getItems() {
-        HashBasedTable<String, CustomItem, Integer> items = HashBasedTable.create();
+    private HashBasedTable<Integer, CustomItem, String> getItems() {
+        HashBasedTable<Integer, CustomItem, String> items = HashBasedTable.create();
         for(String key : config.getConfigurationSection("items").getKeys(false)) {
             int slot = Integer.parseInt(key); //Throws NumberFormatException if key is not a number
             String action = getActionValue(key);
             CustomItem item = CustomItem.fromConfig(config.getConfigurationSection("items." + key));
 
-            items.put(action, item, slot);
+            items.put(slot, item, action);
             System.out.println("Added item " + item.getDisplayName() + " to slot " + slot + " with action " + action);
         }
         return items;
@@ -64,11 +64,11 @@ public class Builder {
         return filler == null ? XMaterial.AIR.parseMaterial() : XMaterial.matchXMaterial(filler).get().parseMaterial();
     }
 
-    public static String getAction(HashBasedTable<String, CustomItem, Integer> items, int slot) {
+    public static String getAction(HashBasedTable<Integer, CustomItem, String> items, int slot) {
         String action = null;
-        for (Table.Cell<String, CustomItem, Integer> cell : items.cellSet()) {
-            if (cell.getValue().equals(slot)) {
-                action = cell.getRowKey();
+        for (Table.Cell<Integer, CustomItem, String> cell : items.cellSet()) {
+            if (cell.getRowKey().equals(slot)) {
+                action = cell.getValue();
                 break;
             }
         }

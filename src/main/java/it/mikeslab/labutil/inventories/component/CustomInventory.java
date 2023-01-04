@@ -21,7 +21,7 @@ import java.util.Map;
 @Setter
 public class CustomInventory {
 
-    private HashBasedTable<String, CustomItem, Integer> items;
+    private HashBasedTable<Integer, CustomItem, String> items;
     private Material fillerMaterial;
     private String name;
     private String title;
@@ -29,7 +29,7 @@ public class CustomInventory {
     private InventoryHolder holder;
 
     public void addItem(int slot, CustomItem item, String action) {
-        items.put(action, item, slot);
+        items.put(slot, item, action);
     }
 
     public void removeItem(String action, CustomItem item) {
@@ -39,9 +39,9 @@ public class CustomInventory {
     public Inventory getBukkitInventory() {
         Inventory inventory = Bukkit.createInventory(holder, size, title);
 
-        for(Table.Cell<String, CustomItem, Integer> cell : items.cellSet()) {
+        for(Table.Cell<Integer, CustomItem, String> cell : items.cellSet()) {
             CustomItem item = cell.getColumnKey();
-            int slot = cell.getValue();
+            int slot = cell.getRowKey();
 
             inventory.setItem(slot, CustomItem.fromCustom(item));
         }
