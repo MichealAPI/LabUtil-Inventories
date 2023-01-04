@@ -6,6 +6,7 @@ import com.google.common.collect.Table;
 import it.mikeslab.labutil.inventories.cache.InvData;
 import it.mikeslab.labutil.inventories.component.CustomInventory;
 import it.mikeslab.labutil.inventories.component.CustomItem;
+import it.mikeslab.labutil.inventories.component.Translatable;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -13,6 +14,9 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.InventoryHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,8 +26,10 @@ public class Builder {
     private CustomInventory inventory;
     private InventoryHolder holder;
     private Material fillerMaterial;
+    private List<Translatable> translatables;
 
     public Builder(String name, InventoryHolder holder) {
+        this.translatables = new ArrayList<>();
         this.name = name;
         this.config = InvData.CACHE.get(name);
         this.holder = holder;
@@ -45,7 +51,7 @@ public class Builder {
         for(String key : config.getConfigurationSection("items").getKeys(false)) {
             int slot = Integer.parseInt(key); //Throws NumberFormatException if key is not a number
             String action = getActionValue(key);
-            CustomItem item = CustomItem.fromConfig(config.getConfigurationSection("items." + key));
+            CustomItem item = CustomItem.fromConfig(config.getConfigurationSection("items." + key), translatables);
 
             items.put(slot, item, action);
             System.out.println("Added item " + item.getDisplayName() + " to slot " + slot + " with action " + action);

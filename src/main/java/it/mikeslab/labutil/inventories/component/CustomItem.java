@@ -24,10 +24,10 @@ public class CustomItem {
     private String texture;
 
 
-    public static CustomItem fromConfig(ConfigurationSection config) {
+    public static CustomItem fromConfig(ConfigurationSection config, List<Translatable> translatables) {
         return CustomItem.builder()
-                .displayName(Translator.translate(config.getString("displayName") + ""))
-                .lore(Translator.translateList(config.getStringList("lore")))
+                .displayName(Translator.translate(config.getString("displayName") + "", translatables))
+                .lore(Translator.translateList(config.getStringList("lore"), translatables))
                 .material(XMaterial.matchXMaterial(config.getString("material")).orElse(XMaterial.AIR))
                 .slot(config.getInt("slot"))
                 .action((config.getString("action") + "").toUpperCase())
