@@ -33,7 +33,7 @@ public class Builder {
         HashBasedTable<String, CustomItem, Integer> items = getItems();
         String title = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(config.getString("title")));
         int size = config.getInt("size");
-        this.fillerMaterial = XMaterial.matchXMaterial(config.getString("filler")).orElse(XMaterial.AIR).parseMaterial();
+        this.fillerMaterial = getFillerMaterial();
 
         this.inventory = new CustomInventory(items, fillerMaterial, name, title, size, holder);
         return inventory;
@@ -57,6 +57,11 @@ public class Builder {
     private String getActionValue(String key) {
         String action = config.getString("items." + key + ".action");
         return action == null ? "NONE" : action;
+    }
+
+    private Material getFillerMaterial() {
+        String filler = config.getString("filler");
+        return filler == null ? XMaterial.AIR.parseMaterial() : XMaterial.matchXMaterial(filler).get().parseMaterial();
     }
 
     public static String getAction(HashBasedTable<String, CustomItem, Integer> items, int slot) {
