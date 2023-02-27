@@ -25,6 +25,8 @@ package it.mikeslab.labutil.inventories.component;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import it.mikeslab.labutil.inventories.event.ItemFinalizingExecutor;
+import it.mikeslab.labutil.inventories.inventory.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +48,7 @@ public class CustomInventory {
     private String title;
     private int size;
     private InventoryHolder holder;
+    private Builder builder;
 
     public void addItem(int slot, CustomItem item, String action) {
         items.put(slot, item, action);
@@ -59,7 +62,10 @@ public class CustomInventory {
         Inventory inventory = Bukkit.createInventory(holder, size, title);
 
         for(Table.Cell<Integer, CustomItem, String> cell : items.cellSet()) {
-            CustomItem item = cell.getColumnKey();
+
+
+            CustomItem item = new ItemFinalizingExecutor(name).loadItemFinalizingExecutor(cell.getColumnKey(), cell.getRowKey());
+
             int slot = cell.getRowKey();
 
             inventory.setItem(slot, CustomItem.fromCustom(item));

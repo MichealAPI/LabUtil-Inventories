@@ -51,6 +51,7 @@ public class Builder {
     private CustomInventory inventory;
     private Material fillerMaterial;
     private List<Translatable> translatables;
+    private Map<String, String> extras;
 
     public Builder(String name, InventoryHolder holder) {
         this.translatables = new ArrayList<>();
@@ -65,7 +66,7 @@ public class Builder {
         int size = config.getInt("size");
         this.fillerMaterial = getFillerMaterial();
 
-        this.inventory = new CustomInventory(items, fillerMaterial, name, title, size, holder);
+        this.inventory = new CustomInventory(items, fillerMaterial, name, title, size, holder, this);
         return inventory;
     }
 

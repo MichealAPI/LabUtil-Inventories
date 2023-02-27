@@ -23,6 +23,7 @@
 package it.mikeslab.labutil.inventories.event;
 
 import it.mikeslab.labutil.inventories.component.CustomInventory;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -35,12 +36,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 public class EventsManager implements Listener {
 
     public static Map<Object, String> instances = new HashMap<>();
-    private Map<InventoryHolder, EventCloseExecutor> closeExecutor;
-    private Map<InventoryHolder, EventOpenExecutor> openExecutor;
-    private Map<InventoryHolder, EventClickExecutor> clickExecutor;
+    private final Map<InventoryHolder, EventCloseExecutor> closeExecutor;
+    private final Map<InventoryHolder, EventOpenExecutor> openExecutor;
+    private final Map<InventoryHolder, EventClickExecutor> clickExecutor;
+    private final Map<InventoryHolder, ItemFinalizingExecutor> itemFinalizingExecutor;
     private List<InventoryHolder> holder;
 
     public EventsManager init(JavaPlugin plugin) {
