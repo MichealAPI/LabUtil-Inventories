@@ -37,12 +37,15 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.AbstractMap;
+import java.util.Map;
+
 @AllArgsConstructor
 @Getter
 @Setter
 public class CustomInventory {
 
-    private HashBasedTable<Integer, CustomItem, String> items;
+    private Map<Integer, Map.Entry<CustomItem, String>> items;
     private Material fillerMaterial;
     private String name;
     private String title;
@@ -51,22 +54,22 @@ public class CustomInventory {
     private Builder builder;
 
     public void addItem(int slot, CustomItem item, String action) {
-        items.put(slot, item, action);
+        items.put(slot, new AbstractMap.SimpleEntry<>(item, action));
     }
 
-    public void removeItem(String action, CustomItem item) {
-        items.remove(action, item);
+    public void removeItem(int slot) {
+        items.remove(slot);
     }
 
     public Inventory getBukkitInventory() {
         Inventory inventory = Bukkit.createInventory(holder, size, title);
 
-        for(Table.Cell<Integer, CustomItem, String> cell : items.cellSet()) {
+        for(Map.Entry<Integer, Map.Entry<CustomItem, String>> cell : items.entrySet()) {
+
+            int slot = cell.getKey();
+            CustomItem item = new ItemFinalizingExecutor(name).loadItemFinalizingExecutor(cell.getValue().getKey(), slot);
 
 
-            CustomItem item = new ItemFinalizingExecutor(name).loadItemFinalizingExecutor(cell.getColumnKey(), cell.getRowKey());
-
-            int slot = cell.getRowKey();
 
             inventory.setItem(slot, CustomItem.fromCustom(item));
         }

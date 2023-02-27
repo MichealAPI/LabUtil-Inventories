@@ -37,10 +37,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter
@@ -61,7 +58,7 @@ public class Builder {
     }
 
     public CustomInventory build(Map<String, String> extras) {
-        HashBasedTable<Integer, CustomItem, String> items = getItems(extras);
+        Map<Integer, Map.Entry<CustomItem, String>> items = getItems(extras);
         String title = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(config.getString("title")));
         int size = config.getInt("size");
         this.fillerMaterial = getFillerMaterial();
@@ -71,15 +68,15 @@ public class Builder {
     }
 
 
-    private HashBasedTable<Integer, CustomItem, String> getItems(Map<String, String> extras) {
-        HashBasedTable<Integer, CustomItem, String> items = HashBasedTable.create();
+    private Map<Integer, Map.Entry<CustomItem, String>> getItems(Map<String, String> extras) {
+        Map<Integer, Map.Entry<CustomItem, String>> items = new HashMap<>();
         for(String key : config.getConfigurationSection("items").getKeys(false)) {
             int slot = Integer.parseInt(key); //Throws NumberFormatException if key is not a number
             String action = getActionValue(key);
 
             CustomItem item = CustomItem.fromConfig(config.getConfigurationSection("items." + key), translatables, extras.getOrDefault(action, ""));
 
-            items.put(slot, item, action);
+            items.put(slot, new AbstractMap.SimpleEntry<>(item, action));
         }
         return items;
     }
@@ -95,15 +92,8 @@ public class Builder {
         return filler == null ? XMaterial.AIR.parseMaterial() : XMaterial.matchXMaterial(filler).get().parseMaterial();
     }
 
-    public static String getAction(HashBasedTable<Integer, CustomItem, String> items, int slot) {
-        String action = null;
-        for (Table.Cell<Integer, CustomItem, String> cell : items.cellSet()) {
-            if (cell.getRowKey().equals(slot)) {
-                action = cell.getValue();
-                break;
-            }
-        }
-        return action;
+    public static String getAction(Map<Integer, Map.Entry<CustomItem, String>> items, int slot) {
+        return items.get(slot).getValue();
     }
 
 

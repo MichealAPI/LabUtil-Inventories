@@ -49,7 +49,7 @@ public class EventClickExecutor {
             if (methods.isEmpty()) return;
 
             System.out.println("1A");
-            String action = Builder.getAction(this.inventory.getItems(), e.getSlot());
+            String action = Builder.getAction(inventory.getItems(), e.getSlot());
 
             if(action == null) return;
             System.out.println("2A");
@@ -60,7 +60,7 @@ public class EventClickExecutor {
 
                 if (clickEvent == null) return;
                 System.out.println("4A");
-
+                System.out.println(e.getSlot() + " " + action + " " + clickEvent.action());
                 System.out.println(clickEvent.action() + " !?= " + action);
 
                 if (!clickEvent.action().equalsIgnoreCase(action)) return;
