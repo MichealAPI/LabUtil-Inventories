@@ -20,15 +20,23 @@
  * SOFTWARE.
  */
 
-package it.mikeslab.labutil.inventories.annotations;
+package it.mikeslab.labutil.inventories.event;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Inventory {
-    String name();
+@RequiredArgsConstructor
+@Getter
+@ApiStatus.Experimental
+public record Holder(String inventoryName) implements InventoryHolder {
+
+    @NotNull
+    @Override
+    public Inventory getInventory() {
+        return null;
+    }
 }
