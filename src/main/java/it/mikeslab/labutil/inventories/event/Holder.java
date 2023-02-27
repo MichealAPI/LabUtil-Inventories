@@ -35,6 +35,6 @@ public record Holder(String inventoryName) implements InventoryHolder {
     @NotNull
     @Override
     public Inventory getInventory() {
-        return null;
+        return null; 
     }
 }
