@@ -38,7 +38,7 @@ public class EventDispatcher implements Listener {
     private Map<String, Map.Entry<Object, CustomInventory>> listeners;
     private Map<String, CustomInventory> inventoryMap;
 
-    private void init(Map<String, CustomInventory> inventories) {
+    public void init(Map<String, CustomInventory> inventories) {
         this.inventoryMap = inventories;
     }
 

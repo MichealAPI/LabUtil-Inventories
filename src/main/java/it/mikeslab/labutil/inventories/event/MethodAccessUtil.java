@@ -55,7 +55,7 @@ public class MethodAccessUtil {
         if(methodHandles.contains(object.getClass(), name)) {
             Objects.requireNonNull(methodHandles.get(object.getClass(), name)).invokeWithArguments(args);
         } else {
-            MethodHandle methodHandle = MethodHandles.lookup().findVirtual(object.getClass(), name, MethodType.methodType(Object.class, Object[].class));
+            MethodHandle methodHandle = MethodHandles.lookup().findVirtual(object.getClass(), name.replace("_", ""), MethodType.methodType(Object.class, Object[].class));
             methodHandles.put(object.getClass(), name, methodHandle);
             methodHandle.invokeWithArguments(args);
         }
