@@ -57,7 +57,10 @@ public class EventClickExecutor {
             objectContent.keySet().stream()
                     .filter(obj -> objectContent.get(obj).getKey().equals(name))
                     .forEach(obj -> objectContent.get(obj).getValue().stream()
-                            .filter(method -> method.getAnnotation(ClickEvent.class).action().equals(elementAction))
+                            .filter(method -> {
+                                ClickEvent clickEventAnnotation = method.getAnnotation(ClickEvent.class);
+                                return clickEventAnnotation != null && clickEventAnnotation.action().equals(elementAction);
+                            })
                             .forEach(method -> {
                                 try {
                                     method.invoke(obj, e);
