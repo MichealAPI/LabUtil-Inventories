@@ -48,9 +48,10 @@ public class EventsManager implements Listener {
         return this;
     }
 
-    public EventsManager registerEvent(String inventoryName, CustomInventory customInventory) {
-        registerEvent(inventoryName, customInventory);
-
+    public EventsManager registerEvent(Class<?> eventClass, CustomInventory customInventory) {
+        registerEvent(eventClass, customInventory);
+        
+        String inventoryName = customInventory.getName();
         InventoryHolder holder = customInventory.getHolder();
         this.holder.add(customInventory.getHolder());
         this.closeExecutor.put(holder, new EventCloseExecutor(inventoryName));
