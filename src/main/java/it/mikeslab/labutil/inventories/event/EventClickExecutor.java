@@ -97,6 +97,9 @@ public class EventClickExecutor {
 
             Class<?> clazz = instance.getClass();
             Method[] classMethods = clazz.getMethods();
+
+            Arrays.stream(classMethods).forEach(method -> System.out.println(method.getName())); //FIXME Here!
+
             for(Method method : classMethods) {
                 if(method.isAnnotationPresent(ClickEvent.class)) {
                     methods.put(instance, method);
