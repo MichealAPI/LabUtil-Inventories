@@ -25,7 +25,6 @@ package it.mikeslab.labutil.inventories.component;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import it.mikeslab.labutil.inventories.component.CustomItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,8 +34,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.Map;
 
 @AllArgsConstructor
 @Getter

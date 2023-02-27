@@ -31,47 +31,76 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class EventsManager implements Listener {
-    private EventCloseExecutor eventCloseExecutor;
-    private EventOpenExecutor eventOpenExecutor;
-    private EventClickExecutor eventClickExecutor;
-    private InventoryHolder holder;
+
+    public static Map<Object, String> instances = new HashMap<>();
+    private Map<InventoryHolder, EventCloseExecutor> closeExecutor;
+    private Map<InventoryHolder, EventOpenExecutor> openExecutor;
+    private Map<InventoryHolder, EventClickExecutor> clickExecutor;
+    private List<InventoryHolder> holder;
 
     public EventsManager init(JavaPlugin plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         return this;
     }
 
-    public EventsManager registerEvents(String inventoryName, CustomInventory customInventory) {
+    public EventsManager registerEvent(String inventoryName, CustomInventory customInventory) {
+        registerEvent(inventoryName, customInventory);
 
-        this.holder = customInventory.getHolder();
-        this.eventCloseExecutor = new EventCloseExecutor(inventoryName);
-        this.eventOpenExecutor = new EventOpenExecutor(inventoryName);
-        this.eventClickExecutor = new EventClickExecutor(inventoryName, customInventory);
+        InventoryHolder holder = customInventory.getHolder();
+        this.holder.add(customInventory.getHolder());
+        this.closeExecutor.put(holder, new EventCloseExecutor(inventoryName));
+        this.openExecutor.put(holder, new EventOpenExecutor(inventoryName));
+        this.clickExecutor.put(holder, new EventClickExecutor(inventoryName, customInventory));
         return this;
     }
 
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
-        if(event.getInventory().getHolder() == this.holder) {
-            eventCloseExecutor.loadCloseEvent().accept(event);
-        }
+        InventoryHolder holder = match(event.getInventory().getHolder());
+        if (holder == null) return;
+
+        closeExecutor.get(holder).loadCloseEvent().accept(event);
     }
 
     @EventHandler
     public void onOpen(InventoryOpenEvent event) {
-        if(event.getInventory().getHolder() == this.holder) {
-            eventOpenExecutor.loadOpenEvent().accept(event);
-        }
+        InventoryHolder holder = match(event.getInventory().getHolder());
+        if (holder == null) return;
+
+        openExecutor.get(holder).loadOpenEvent().accept(event);
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if(event.getClickedInventory() == null) return;
-        if(event.getClickedInventory().getHolder() == this.holder) {
-            event.setCancelled(true);
-            eventClickExecutor.loadClickEvent().accept(event);
+
+        InventoryHolder holder = match(event.getInventory().getHolder());
+        if (holder == null) return;
+
+        clickExecutor.get(holder).loadClickEvent().accept(event);
+    }
+
+
+    private InventoryHolder match(InventoryHolder holder) {
+        for(InventoryHolder h : this.holder) {
+            if(h.equals(holder)) {
+                return h;
+            }
         }
+        return null;
+    }
+
+    private void registerEvent(Object object, String inventoryName) {
+        instances.put(object, inventoryName);
+    }
+
+    public void unregisterEvent(Object object) {
+        instances.remove(object);
     }
 
 

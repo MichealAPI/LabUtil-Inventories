@@ -55,7 +55,7 @@ public class EventCloseExecutor {
     }
 
     public EventCloseExecutor register() {
-        Map<Object, String> involvedClasses = ExecutorUtil.instances;
+        Map<Object, String> involvedClasses = EventsManager.instances;
         this.methods = getCloseEventMethods(involvedClasses);
         return this;
     }

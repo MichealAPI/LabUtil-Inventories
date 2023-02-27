@@ -72,7 +72,7 @@ public class EventClickExecutor {
     }
 
     public EventClickExecutor register() {
-        Map<Object, String> involvedClasses = ExecutorUtil.instances;
+        Map<Object, String> involvedClasses = EventsManager.instances;
         this.methods = getClickEventMethods(involvedClasses);
         return this;
     }

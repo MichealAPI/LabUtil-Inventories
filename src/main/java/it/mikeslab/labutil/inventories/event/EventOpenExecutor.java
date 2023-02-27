@@ -56,7 +56,7 @@ public class EventOpenExecutor {
     }
 
     public EventOpenExecutor register() {
-        Map<Object, String> involvedClasses = ExecutorUtil.instances;
+        Map<Object, String> involvedClasses = EventsManager.instances;
         this.methods = getOpenEventMethods(involvedClasses);
         return this;
     }
