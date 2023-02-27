@@ -61,6 +61,8 @@ public class EventClickExecutor {
                 if (clickEvent == null) return;
                 System.out.println("4A");
 
+                System.out.println(clickEvent.action() + " !?= " + action);
+
                 if (!clickEvent.action().equalsIgnoreCase(action)) return;
                 System.out.println("5A");
 
