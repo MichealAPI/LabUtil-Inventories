@@ -45,18 +45,24 @@ public class EventClickExecutor {
 
     public Consumer<InventoryClickEvent> loadClickEvent() {
         return (e) -> {
+            System.out.println("0A");
             if (methods.isEmpty()) return;
 
+            System.out.println("1A");
             String action = Builder.getAction(this.inventory.getItems(), e.getSlot());
 
             if(action == null) return;
+            System.out.println("2A");
 
             for (Map.Entry<Object, Method> entry : methods.entrySet()) {
                 ClickEvent clickEvent = entry.getValue().getAnnotation(ClickEvent.class);
+                System.out.println("3A");
 
                 if (clickEvent == null) return;
+                System.out.println("4A");
 
                 if (!clickEvent.action().equalsIgnoreCase(action)) return;
+                System.out.println("5A");
 
 
                 try {
@@ -64,6 +70,7 @@ public class EventClickExecutor {
                     Object instance = entry.getKey();
 
                     method.invoke(instance, e);
+                    System.out.println("6A");
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
