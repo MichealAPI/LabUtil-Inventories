@@ -38,6 +38,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ public class Builder {
     }
 
     public CustomInventory build() {
-        HashBasedTable<Integer, CustomItem, String> items = getItems();
+        HashBasedTable<Integer, CustomItem, String> items = getItems(new HashMap<>());
         String title = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(config.getString("title")));
         int size = config.getInt("size");
         this.fillerMaterial = getFillerMaterial();
