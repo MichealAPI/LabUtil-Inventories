@@ -94,6 +94,7 @@ public class EventsManager implements Listener {
         InventoryHolder holder = match(event.getInventory().getHolder());
         if (holder == null) return;
 
+        event.setCancelled(true);
         clickExecutor.get(holder).loadClickEvent().accept(event);
     }
 
