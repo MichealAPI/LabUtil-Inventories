@@ -32,18 +32,19 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RequiredArgsConstructor
+
 public class EventsManager implements Listener {
 
     public static Map<Object, String> instances = new HashMap<>();
-    private final Map<InventoryHolder, EventCloseExecutor> closeExecutor;
-    private final Map<InventoryHolder, EventOpenExecutor> openExecutor;
-    private final Map<InventoryHolder, EventClickExecutor> clickExecutor;
-    private final Map<InventoryHolder, ItemFinalizingExecutor> itemFinalizingExecutor;
+    private Map<InventoryHolder, EventCloseExecutor> closeExecutor;
+    private Map<InventoryHolder, EventOpenExecutor> openExecutor;
+    private Map<InventoryHolder, EventClickExecutor> clickExecutor;
+    private Map<InventoryHolder, ItemFinalizingExecutor> itemFinalizingExecutor;
     private List<InventoryHolder> holder;
 
     public EventsManager init(JavaPlugin plugin) {
@@ -52,6 +53,14 @@ public class EventsManager implements Listener {
     }
 
     public EventsManager registerEvent(Object eventClassInstance, CustomInventory customInventory) {
+        
+        if(closeExecutor == null) closeExecutor = new HashMap<>();
+        if(openExecutor == null) openExecutor = new HashMap<>();
+        if(clickExecutor == null) clickExecutor = new HashMap<>();
+        if(itemFinalizingExecutor == null) itemFinalizingExecutor = new HashMap<>();
+        if(holder == null) holder = new ArrayList<>();
+
+
         registerEvent(eventClassInstance, customInventory);
 
         String inventoryName = customInventory.getName();
