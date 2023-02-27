@@ -24,7 +24,6 @@ package it.mikeslab.labutil.inventories.event;
 
 
 import com.google.common.collect.HashBasedTable;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -35,7 +34,6 @@ import java.util.Objects;
  * A utility class that allows accessing the methods of a given class and invoking a method on an instance of the class
  * with a specified name using MethodHandle for improved performance.
  */
-@ApiStatus.Experimental
 public final class MethodAccessUtil {
     private static final HashBasedTable<Class<?>, String, MethodHandle> methodHandles = HashBasedTable.create();
 

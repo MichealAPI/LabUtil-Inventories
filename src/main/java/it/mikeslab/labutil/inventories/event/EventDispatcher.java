@@ -34,7 +34,6 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.HashMap;
 import java.util.Map;
 
-@ApiStatus.Experimental
 public class EventDispatcher implements Listener {
 
     private Map<String, Map.Entry<Object, CustomInventory>> listeners;
