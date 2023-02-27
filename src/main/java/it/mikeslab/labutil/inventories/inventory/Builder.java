@@ -39,6 +39,7 @@ import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -68,12 +69,13 @@ public class Builder {
     }
 
 
-    private HashBasedTable<Integer, CustomItem, String> getItems() {
+    private HashBasedTable<Integer, CustomItem, String> getItems(Map<String, String> extras) {
         HashBasedTable<Integer, CustomItem, String> items = HashBasedTable.create();
         for(String key : config.getConfigurationSection("items").getKeys(false)) {
             int slot = Integer.parseInt(key); //Throws NumberFormatException if key is not a number
             String action = getActionValue(key);
-            CustomItem item = CustomItem.fromConfig(config.getConfigurationSection("items." + key), translatables);
+
+            CustomItem item = CustomItem.fromConfig(config.getConfigurationSection("items." + key), translatables, extras.getOrDefault(action, ""));
 
             items.put(slot, item, action);
         }

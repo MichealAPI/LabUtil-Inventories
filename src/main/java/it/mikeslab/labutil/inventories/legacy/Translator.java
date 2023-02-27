@@ -29,6 +29,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Translator {
@@ -70,6 +71,22 @@ public class Translator {
 
     public static List<Component> translateList(List<String> input, List<Translatable> translatables) {
         if(input == null) return new ArrayList<>();
+
+        for(Translatable translatable : translatables) {
+            input = input.stream().map(s -> s.replace(translatable.getKey(), translatable.getReplacement())).collect(Collectors.toList());
+        }
+
+        return input.stream().map(MiniMessage.miniMessage()::deserialize).collect(Collectors.toList());
+    }
+
+    public static List<Component> translateList(List<String> input, List<Translatable> translatables, String extraLine) {
+        if(input == null) return new ArrayList<>();
+
+        if(!Objects.equals(extraLine, "")) {
+            input.add(" ");
+            input.add(extraLine);
+        }
+
 
         for(Translatable translatable : translatables) {
             input = input.stream().map(s -> s.replace(translatable.getKey(), translatable.getReplacement())).collect(Collectors.toList());

@@ -46,10 +46,10 @@ public class CustomItem {
     private String texture;
 
 
-    public static CustomItem fromConfig(ConfigurationSection config, List<Translatable> translatables) {
+    public static CustomItem fromConfig(ConfigurationSection config, List<Translatable> translatables, String extraLine) {
         return CustomItem.builder()
                 .displayName(Translator.translate(config.getString("displayName") + "", translatables))
-                .lore(Translator.translateList(config.getStringList("lore"), translatables))
+                .lore(Translator.translateList(config.getStringList("lore"), translatables, extraLine))
                 .material(XMaterial.matchXMaterial(config.getString("material")).orElse(XMaterial.AIR))
                 .slot(config.getInt("slot"))
                 .action((config.getString("action") + "").toUpperCase())
@@ -58,6 +58,10 @@ public class CustomItem {
                 .texture(config.getString("texture") == null ? null : config.getString("texture"))
                 .build();
     }
+
+
+
+
 
     public static ItemStack fromCustom(CustomItem customItem) {
         if(customItem.getTexture() != null) {
