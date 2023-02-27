@@ -22,20 +22,17 @@
 
 package it.mikeslab.labutil.inventories.event;
 
-import it.mikeslab.labutil.inventories.annotations.ItemFinalizing;
-import it.mikeslab.labutil.inventories.component.CustomInventory;
+import it.mikeslab.labutil.inventories.annotations.OpenEvent;
 import it.mikeslab.labutil.inventories.component.CustomItem;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.util.Consumer;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemFinalizingExecutor {
     private final String name;
-    private Map<Object, Method> methods;
+    private Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> objectContent;
 
     public ItemFinalizingExecutor(String name) {
         this.name = name;
@@ -43,46 +40,45 @@ public class ItemFinalizingExecutor {
     }
 
     public CustomItem loadItemFinalizingExecutor(CustomItem customItem, int slot) {
-        if (methods.isEmpty()) return customItem;
-
-        for (Map.Entry<Object, Method> entry : methods.entrySet()) {
-            try {
-                Method method = entry.getValue();
-                Object instance = entry.getKey();
-                return (CustomItem) method.invoke(instance, customItem, slot);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+        if (objectContent.isEmpty()) return customItem;
+        AtomicReference<AbstractMap.SimpleEntry<Object, Method>> methodEntry = new AtomicReference<>();
+        
+        objectContent.keySet().stream()
+                .filter(obj -> objectContent.get(obj).getKey().equals(name))
+                .forEach(obj -> methodEntry.set(new AbstractMap.SimpleEntry<>(obj, objectContent.get(obj).getValue().get(0))));
+        try {
+            return (CustomItem) methodEntry.get().getValue().invoke(methodEntry.get().getKey(), customItem, slot);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
         }
-        return customItem;
     }
 
 
+
     public ItemFinalizingExecutor register() {
-        Map<Object, String> involvedClasses = EventsManager.instances;
-        this.methods = getItemFinalizingMethods(involvedClasses);
+        Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> involvedClasses = EventsManager.instances;
+        this.objectContent = getItemFinalizingMethods(involvedClasses);
         return this;
     }
 
 
-    private Map<Object, Method> getItemFinalizingMethods(Map<Object, String> objects) {
-        Map<Object, Method> methods = new HashMap<>();
+    private Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> getItemFinalizingMethods(Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> instances) {
+        Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> objectContent = new HashMap<>();
+        List<Method> methods = new ArrayList<>();
 
+        instances.keySet()
+                .stream()
+                .filter(s -> instances.get(s).getKey().equals(name))
+                .forEach(val -> {
+                    String name = instances.get(val).getKey();
+                    for (Method method : val.getClass().getDeclaredMethods()) {
+                        if (method.isAnnotationPresent(OpenEvent.class)) {
+                            methods.add(method);
+                        }
+                    }
+                    objectContent.put(val, new AbstractMap.SimpleEntry<>(name, methods));
+                });
 
-        for(Map.Entry<Object, String> entry : objects.entrySet()) {
-            if(!Objects.equals(entry.getValue(), name)) continue;
-
-            Object instance = entry.getKey();
-
-            Class<?> clazz = instance.getClass();
-            Method[] classMethods = clazz.getMethods();
-
-            for(Method method : classMethods) {
-                if(method.isAnnotationPresent(ItemFinalizing.class)) {
-                    methods.put(instance, method);
-                }
-            }
-        }
-        return methods;
+        return objectContent;
     }
 }

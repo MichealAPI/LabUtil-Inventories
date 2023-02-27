@@ -22,20 +22,22 @@
 
 package it.mikeslab.labutil.inventories.event;
 
-import it.mikeslab.labutil.inventories.component.CustomInventory;
 import it.mikeslab.labutil.inventories.annotations.ClickEvent;
-import it.mikeslab.labutil.inventories.inventory.Builder;
+import it.mikeslab.labutil.inventories.annotations.CloseEvent;
+import it.mikeslab.labutil.inventories.component.CustomInventory;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.util.Consumer;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
+import static it.mikeslab.labutil.inventories.event.EventCloseExecutor.getObjectEntryMap;
+
 
 public class EventClickExecutor {
     private final String name;
     private final CustomInventory inventory;
-    private Map<Object, Method> methods;
+    private Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> objectContent;
 
     public EventClickExecutor(String name, CustomInventory inventory) {
         this.name = name;
@@ -45,68 +47,36 @@ public class EventClickExecutor {
 
     public Consumer<InventoryClickEvent> loadClickEvent() {
         return (e) -> {
-            System.out.println("0A");
-            if (methods.isEmpty()) return;
-
-            System.out.println("1A");
-            String action = Builder.getAction(inventory.getItems(), e.getSlot());
-
-            if(action == null) return;
-            System.out.println("2A");
-
-            for (Map.Entry<Object, Method> entry : methods.entrySet()) {
-                ClickEvent clickEvent = entry.getValue().getAnnotation(ClickEvent.class);
-                System.out.println("3A");
-
-                if (clickEvent == null) return;
-                System.out.println("4A");
-                System.out.println(e.getSlot() + " " + action + " " + clickEvent.action());
-                System.out.println(clickEvent.action() + " !?= " + action);
-
-                if (!clickEvent.action().equalsIgnoreCase(action)) return;
-                System.out.println("5A");
-
-
-                try {
-                    Method method = entry.getValue();
-                    Object instance = entry.getKey();
-
-                    method.invoke(instance, e);
-                    System.out.println("6A");
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-            }
+            
+            if(objectContent.isEmpty()) return;
+            if(inventory.getItems().get(e.getSlot()) == null) return;
+            if(inventory.getItems().get(e.getSlot()).getValue() == null) return;
+            
+            String elementAction = inventory.getItems().get(e.getSlot()).getValue();
+            
+            objectContent.keySet().stream()
+                    .filter(obj -> objectContent.get(obj).getKey().equals(name))
+                    .forEach(obj -> objectContent.get(obj).getValue().stream()
+                            .filter(method -> method.getAnnotation(ClickEvent.class).action().equals(elementAction))
+                            .forEach(method -> {
+                                try {
+                                    method.invoke(obj, e);
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
+                                }
+                            }));
         };
     }
 
     public EventClickExecutor register() {
-        Map<Object, String> involvedClasses = EventsManager.instances;
-        this.methods = getClickEventMethods(involvedClasses);
+        Map<Object, AbstractMap.SimpleEntry<String, List<Method>>>  involvedClasses = EventsManager.instances;
+        this.objectContent = getClickEventMethods(involvedClasses);
         return this;
     }
 
 
-    private Map<Object, Method> getClickEventMethods(Map<Object, String> objects) {
-        Map<Object, Method> methods = new HashMap<>();
-
-        for(Map.Entry<Object, String> entry : objects.entrySet()) {
-            if(!Objects.equals(entry.getValue(), name)) continue;
-
-            Object instance = entry.getKey();
-
-            Class<?> clazz = instance.getClass();
-            Method[] classMethods = clazz.getMethods();
-
-            Arrays.stream(classMethods).forEach(method -> System.out.println(method.getName())); //FIXME Here!
-
-            for(Method method : classMethods) {
-                if(method.isAnnotationPresent(ClickEvent.class)) {
-                    methods.put(instance, method);
-                }
-            }
-        }
-        return methods;
+    private Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> getClickEventMethods(Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> instances) {
+        return getObjectEntryMap(instances, name);
     }
 
 }

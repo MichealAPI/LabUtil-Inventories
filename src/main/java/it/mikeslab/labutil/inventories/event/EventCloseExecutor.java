@@ -25,13 +25,14 @@ package it.mikeslab.labutil.inventories.event;
 import it.mikeslab.labutil.inventories.annotations.CloseEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.util.Consumer;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class EventCloseExecutor {
     private final String name;
-    private Map<Object, Method> methods;
+    private Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> objectContent;
 
     public EventCloseExecutor(String name) {
         this.name = name;
@@ -40,45 +41,50 @@ public class EventCloseExecutor {
 
     public Consumer<InventoryCloseEvent> loadCloseEvent() {
         return (e) -> {
-            if (methods.isEmpty()) return;
+            if (objectContent.isEmpty()) return;
 
-            for (Map.Entry<Object, Method> entry : methods.entrySet()) {
-                try {
-                    Method method = entry.getValue();
-                    Object instance = entry.getKey();
-                    method.invoke(instance, e);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-            }
+            objectContent.keySet().stream()
+                    .filter(obj -> objectContent.get(obj).getKey().equals(name))
+                    .forEach(obj -> objectContent.get(obj).getValue()
+                            .forEach(method -> {
+                                try {
+                                    method.invoke(obj, e);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            }));
         };
     }
 
     public EventCloseExecutor register() {
-        Map<Object, String> involvedClasses = EventsManager.instances;
-        this.methods = getCloseEventMethods(involvedClasses);
+        Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> involvedClasses = EventsManager.instances;
+        this.objectContent = getCloseEventMethods(involvedClasses);
         return this;
     }
 
 
-    private Map<Object, Method> getCloseEventMethods(Map<Object, String> objects) {
-        Map<Object, Method> methods = new HashMap<>();
+    private Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> getCloseEventMethods(Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> instances) {
+        return getObjectEntryMap(instances, name);
+    }
 
+    @NotNull
+    static Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> getObjectEntryMap(Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> instances, String name2) {
+        Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> objectContent = new HashMap<>();
+        List<Method> methods = new ArrayList<>();
 
-        for(Map.Entry<Object, String> entry : objects.entrySet()) {
-            if(!Objects.equals(entry.getValue(), name)) continue;
+        instances.keySet()
+                .stream()
+                .filter(s -> instances.get(s).getKey().equals(name2))
+                .forEach(val -> {
+                    String name = instances.get(val).getKey();
+                    for (Method method : val.getClass().getDeclaredMethods()) {
+                        if (method.isAnnotationPresent(CloseEvent.class)) {
+                            methods.add(method);
+                        }
+                    }
+                    objectContent.put(val, new AbstractMap.SimpleEntry<>(name, methods));
+                });
 
-            Object instance = entry.getKey();
-
-            Class<?> clazz = instance.getClass();
-            Method[] classMethods = clazz.getMethods();
-
-            for(Method method : classMethods) {
-                if(method.isAnnotationPresent(CloseEvent.class)) {
-                    methods.put(instance, method);
-                }
-            }
-        }
-        return methods;
+        return objectContent;
     }
 }

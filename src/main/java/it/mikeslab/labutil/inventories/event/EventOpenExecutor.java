@@ -22,16 +22,18 @@
 
 package it.mikeslab.labutil.inventories.event;
 
+import it.mikeslab.labutil.inventories.annotations.ClickEvent;
 import it.mikeslab.labutil.inventories.annotations.OpenEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.util.Consumer;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class EventOpenExecutor {
     private final String name;
-    private Map<Object, Method> methods;
+    private Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> objectContent;
 
     public EventOpenExecutor(String name) {
         this.name = name;
@@ -40,44 +42,46 @@ public class EventOpenExecutor {
 
     public Consumer<InventoryOpenEvent> loadOpenEvent() {
         return (e) -> {
-            if (methods.isEmpty()) return;
+            if (objectContent.isEmpty()) return;
 
-            for (Map.Entry<Object, Method> entry : methods.entrySet()) {
-                try {
-                    Method method = entry.getValue();
-                    Object instance = entry.getKey();
-
-                    method.invoke(instance, e);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-            }
+            objectContent.keySet().stream()
+                    .filter(obj -> objectContent.get(obj).getKey().equals(name))
+                    .forEach(obj -> objectContent.get(obj).getValue()
+                            .forEach(method -> {
+                                try {
+                                    method.invoke(obj, e);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            }));
         };
     }
+    
 
     public EventOpenExecutor register() {
-        Map<Object, String> involvedClasses = EventsManager.instances;
-        this.methods = getOpenEventMethods(involvedClasses);
+        Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> involvedClasses = EventsManager.instances;
+        this.objectContent = getOpenEventMethods(involvedClasses);
         return this;
     }
 
 
-    private Map<Object, Method> getOpenEventMethods(Map<Object, String> objects) {
-        Map<Object, Method> methods = new HashMap<>();
+    private Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> getOpenEventMethods(Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> instances) {
+        Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> objectContent = new HashMap<>();
+        List<Method> methods = new ArrayList<>();
 
-        for(Map.Entry<Object, String> entry : objects.entrySet()) {
-            if(!Objects.equals(entry.getValue(), name)) continue;
+        instances.keySet()
+                .stream()
+                .filter(s -> instances.get(s).getKey().equals(name))
+                .forEach(val -> {
+                    String name = instances.get(val).getKey();
+                    for (Method method : val.getClass().getDeclaredMethods()) {
+                        if (method.isAnnotationPresent(OpenEvent.class)) {
+                            methods.add(method);
+                        }
+                    }
+                    objectContent.put(val, new AbstractMap.SimpleEntry<>(name, methods));
+                });
 
-            Object instance = entry.getKey();
-
-            Class<?> clazz = instance.getClass();
-            Method[] classMethods = clazz.getMethods();
-            for(Method method : classMethods) {
-                if(method.isAnnotationPresent(OpenEvent.class)) {
-                    methods.put(instance, method);
-                }
-            }
-        }
-        return methods;
+        return objectContent;
     }
 }

@@ -32,15 +32,13 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.*;
 
 
 public class EventsManager implements Listener {
 
-    public static Map<Object, String> instances = new HashMap<>();
+    public static Map<Object, AbstractMap.SimpleEntry<String, List<Method>>> instances = new HashMap<>();
     private Map<InventoryHolder, EventCloseExecutor> closeExecutor;
     private Map<InventoryHolder, EventOpenExecutor> openExecutor;
     private Map<InventoryHolder, EventClickExecutor> clickExecutor;
@@ -109,7 +107,7 @@ public class EventsManager implements Listener {
     }
 
     private void registerEventInstance(Object object, String inventoryName) {
-        instances.put(object, inventoryName);
+        instances.put(object, new AbstractMap.SimpleEntry<>(inventoryName, new ArrayList<>()));
     }
 
     public void unregisterEvent(Object object) {
