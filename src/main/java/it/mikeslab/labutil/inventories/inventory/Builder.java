@@ -23,8 +23,6 @@
 package it.mikeslab.labutil.inventories.inventory;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import it.mikeslab.labutil.inventories.cache.InvData;
 import it.mikeslab.labutil.inventories.component.CustomInventory;
 import it.mikeslab.labutil.inventories.component.CustomItem;

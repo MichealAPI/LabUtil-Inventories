@@ -22,14 +22,18 @@
 
 package it.mikeslab.labutil.inventories.event;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 
 
-public record Holder(String inventoryName) implements InventoryHolder {
+@Getter
+@RequiredArgsConstructor
+public class Holder implements InventoryHolder {
+    private final String inventoryName;
 
     @NotNull
     @Override

@@ -29,7 +29,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,8 +91,9 @@ public class EventDispatcher implements Listener {
     public void onClick(InventoryClickEvent event) {
         if(event.getClickedInventory() == null) return;
         if(event.getClickedInventory().getHolder() == null) return;
-        if(!(event.getClickedInventory().getHolder() instanceof Holder holder)) return;
+        if(!(event.getClickedInventory().getHolder() instanceof Holder)) return;
 
+        Holder holder = (Holder) event.getClickedInventory().getHolder();
         CustomInventory inventory = identifyInventory(holder);
 
         if(inventory == null) return;
@@ -115,14 +115,15 @@ public class EventDispatcher implements Listener {
 
     private CustomInventory isCustomInventory(InventoryHolder holder) {
         if (holder instanceof Holder) {
-            return inventoryMap.get(((Holder) holder).inventoryName());
+            Holder holder1 = (Holder) holder;
+            return inventoryMap.get(holder1.getInventoryName());
         }
         return null;
     }
 
 
     private CustomInventory identifyInventory(Holder holder) {
-        return inventoryMap.getOrDefault(holder.inventoryName(), null);
+        return inventoryMap.getOrDefault(holder.getInventoryName(), null);
     }
 
 

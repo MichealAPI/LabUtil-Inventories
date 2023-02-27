@@ -34,7 +34,7 @@ import java.util.Objects;
  * A utility class that allows accessing the methods of a given class and invoking a method on an instance of the class
  * with a specified name using MethodHandle for improved performance.
  */
-public final class MethodAccessUtil {
+public class MethodAccessUtil {
     private static final HashBasedTable<Class<?>, String, MethodHandle> methodHandles = HashBasedTable.create();
 
 
