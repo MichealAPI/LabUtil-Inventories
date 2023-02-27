@@ -42,7 +42,6 @@ public class EventsManager implements Listener {
     private Map<InventoryHolder, EventCloseExecutor> closeExecutor;
     private Map<InventoryHolder, EventOpenExecutor> openExecutor;
     private Map<InventoryHolder, EventClickExecutor> clickExecutor;
-    private Map<InventoryHolder, ItemFinalizingExecutor> itemFinalizingExecutor;
     private List<InventoryHolder> holder;
 
     public EventsManager init(JavaPlugin plugin) {
@@ -55,7 +54,6 @@ public class EventsManager implements Listener {
         if(closeExecutor == null) closeExecutor = new HashMap<>();
         if(openExecutor == null) openExecutor = new HashMap<>();
         if(clickExecutor == null) clickExecutor = new HashMap<>();
-        if(itemFinalizingExecutor == null) itemFinalizingExecutor = new HashMap<>();
         if(holder == null) holder = new ArrayList<>();
         String inventoryName = customInventory.getName();
 

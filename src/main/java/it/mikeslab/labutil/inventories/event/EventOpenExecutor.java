@@ -22,11 +22,9 @@
 
 package it.mikeslab.labutil.inventories.event;
 
-import it.mikeslab.labutil.inventories.annotations.ClickEvent;
 import it.mikeslab.labutil.inventories.annotations.OpenEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.util.Consumer;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.util.*;

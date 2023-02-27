@@ -23,9 +23,6 @@
 package it.mikeslab.labutil.inventories.component;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import it.mikeslab.labutil.inventories.event.ItemFinalizingExecutor;
 import it.mikeslab.labutil.inventories.inventory.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -67,11 +64,8 @@ public class CustomInventory {
         for(Map.Entry<Integer, Map.Entry<CustomItem, String>> cell : items.entrySet()) {
 
             int slot = cell.getKey();
-            CustomItem item = new ItemFinalizingExecutor(name).loadItemFinalizingExecutor(cell.getValue().getKey(), slot);
 
-
-
-            inventory.setItem(slot, CustomItem.fromCustom(item));
+            inventory.setItem(slot, CustomItem.fromCustom(cell.getValue().getKey()));
         }
 
         return this.fill(inventory);
