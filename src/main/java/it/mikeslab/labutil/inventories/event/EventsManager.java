@@ -53,17 +53,16 @@ public class EventsManager implements Listener {
     }
 
     public EventsManager registerEvent(Object eventClassInstance, CustomInventory customInventory) {
-        
+
         if(closeExecutor == null) closeExecutor = new HashMap<>();
         if(openExecutor == null) openExecutor = new HashMap<>();
         if(clickExecutor == null) clickExecutor = new HashMap<>();
         if(itemFinalizingExecutor == null) itemFinalizingExecutor = new HashMap<>();
         if(holder == null) holder = new ArrayList<>();
-
-
-        registerEvent(eventClassInstance, customInventory);
-
         String inventoryName = customInventory.getName();
+
+        registerEventInstance(eventClassInstance, inventoryName);
+
         InventoryHolder holder = customInventory.getHolder();
         this.holder.add(customInventory.getHolder());
         this.closeExecutor.put(holder, new EventCloseExecutor(inventoryName));
@@ -108,7 +107,7 @@ public class EventsManager implements Listener {
         return null;
     }
 
-    private void registerEvent(Object object, String inventoryName) {
+    private void registerEventInstance(Object object, String inventoryName) {
         instances.put(object, inventoryName);
     }
 
