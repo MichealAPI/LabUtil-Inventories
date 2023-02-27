@@ -59,8 +59,8 @@ public class Builder {
         this.holder = holder;
     }
 
-    public CustomInventory build() {
-        HashBasedTable<Integer, CustomItem, String> items = getItems(new HashMap<>());
+    public CustomInventory build(Map<String, String> extras) {
+        HashBasedTable<Integer, CustomItem, String> items = getItems(extras);
         String title = LegacyComponentSerializer.legacySection().serialize(MiniMessage.miniMessage().deserialize(config.getString("title")));
         int size = config.getInt("size");
         this.fillerMaterial = getFillerMaterial();
