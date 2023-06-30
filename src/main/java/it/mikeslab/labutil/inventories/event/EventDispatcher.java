@@ -57,7 +57,7 @@ public class EventDispatcher implements Listener {
     }
 
     @EventHandler
-    public void onOpen(InventoryOpenEvent event) {
+    private void onOpen(InventoryOpenEvent event) {
         CustomInventory customInventory = isCustomInventory(event.getInventory().getHolder());
 
         if(customInventory == null) return;
@@ -72,7 +72,7 @@ public class EventDispatcher implements Listener {
 
 
     @EventHandler
-    public void onClose(InventoryOpenEvent event) {
+    private void onClose(InventoryOpenEvent event) {
         CustomInventory customInventory = isCustomInventory(event.getInventory().getHolder());
 
         if(customInventory == null) return;
@@ -88,7 +88,7 @@ public class EventDispatcher implements Listener {
 
 
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
+    private void onClick(InventoryClickEvent event) {
         if(event.getClickedInventory() == null) return;
         if(event.getClickedInventory().getHolder() == null) return;
         if(!(event.getClickedInventory().getHolder() instanceof Holder)) return;

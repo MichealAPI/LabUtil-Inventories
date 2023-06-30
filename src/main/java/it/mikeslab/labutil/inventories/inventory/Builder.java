@@ -45,11 +45,11 @@ public class Builder {
     private final InventoryHolder holder;
     private CustomInventory inventory;
     private Material fillerMaterial;
-    private List<Translatable> translatables;
+    private List<Translatable> translatableList;
     private Map<String, String> extras;
 
     public Builder(String name, InventoryHolder holder) {
-        this.translatables = new ArrayList<>();
+        this.translatableList = new ArrayList<>();
         this.name = name;
         this.config = InvData.CACHE.get(name);
         this.holder = holder;
@@ -72,7 +72,7 @@ public class Builder {
             int slot = Integer.parseInt(key); //Throws NumberFormatException if key is not a number
             String action = getActionValue(key);
 
-            CustomItem item = CustomItem.fromConfig(config.getConfigurationSection("items." + key), translatables, extras.getOrDefault(action, ""));
+            CustomItem item = CustomItem.fromConfig(config.getConfigurationSection("items." + key), translatableList, extras.getOrDefault(action, ""));
 
             items.put(slot, new AbstractMap.SimpleEntry<>(item, action));
         }
